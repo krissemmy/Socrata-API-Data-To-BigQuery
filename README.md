@@ -1,5 +1,6 @@
 # Socrata-API-Data-To-BigQuery
-![Alt text](image-1.png)
+![image](https://github.com/krissemmy/Socrata-API-Data-To-BigQuery/assets/119800888/59e25b7d-a151-4e3d-97ec-9d85e099c1dc)
+
 
 ## Overview
 • An Extract and Load pipeline that gets Eviction Notice data from San Francisco Open Data [Website](https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5),
@@ -126,7 +127,8 @@ perform the following on your Google Cloud Platform
     ```
     ~/.google/credentials/:/.google/credentials:ro
     ```
-    ![Alt text](image-1.png)
+    ![image](https://github.com/krissemmy/Socrata-API-Data-To-BigQuery/assets/119800888/5b21c7f8-0605-434c-9885-c3b0662c4d3a)
+
 
 3. build airflow container image with:
 ```bash
