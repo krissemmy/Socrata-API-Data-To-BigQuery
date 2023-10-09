@@ -55,37 +55,6 @@ with DAG(
     load_gcs_to_bigquery =  GCSToBigQueryOperator(
         task_id = "load_gcs_to_bigquery",
         bucket=f"{BUCKET}", #BUCKET
-        # schema_fields = [
-        #     {'name': 'eviction_id', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'address', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'city', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'state', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'zip', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'file_date', 'type': 'TIMESTAMP', 'mode': 'NULLABLE'},
-        #     {'name': 'non_payment', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'breach', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'nuisance', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'illegal_use', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'failure_to_sign_renewal', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'access_denial', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'unapproved_subtenant', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'owner_move_in', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'demolition', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'capital_improvement', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'substantial_rehab', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'ellis_act_withdrawal', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'condo_conversion', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'roommate_same_unit', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'other_cause', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'late_payments', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'lead_remediation', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'development', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'good_samaritan_ends', 'type': 'BOOL', 'mode': 'NULLABLE'},
-        #     {'name': 'supervisor_district', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'neighborhood', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'client_location', 'type': 'STRING', 'mode': 'NULLABLE'},
-        #     {'name': 'shape', 'type': 'STRING', 'mode': 'NULLABLE'}
-        # ],
         source_objects=[f"{OBJECT}.parquet"], # SOURCE OBJECT
         destination_project_dataset_table=f"{DATASET}.{OBJECT}_table", # `nyc.green_dataset_data` i.e table name
         autodetect=True, #DETECT SCHEMA : the columns and the type of data in each columns of the CSV file
