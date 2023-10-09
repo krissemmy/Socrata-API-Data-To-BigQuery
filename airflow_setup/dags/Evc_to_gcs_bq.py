@@ -1,17 +1,11 @@
 import os
-
 from datetime import datetime, timedelta
-
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-
 from web.operators.Socrota_To_GCS import SocrataToGCSHKOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
-
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
-
-
 
 DEFAULT_ARGS = {
     "owner": "airflow",
@@ -28,8 +22,6 @@ BUCKET = os.environ.get("GCP_GCS_BUCKET")
 API_TOKEN = os.environ.get("API_TOKEN")
 OBJECT = "eviction_data"
 DATASET="alt_data"
-#FILE_FORMAT= "PARQUET"
-
 
 with DAG(
     dag_id="Load-Eviction-Data-From-Web-To-GCS-To-BQ",
@@ -44,21 +36,21 @@ with DAG(
 
     # Create a task with a different endpoint
     download_web_to_gcs = SocrataToGCSHKOperator(
-        task_id='my_download_task',
-        endpoint="5cei-gny5.json",
-        file_name="eviction_data",  # Provide the desired file name
-        destination_bucket=BUCKET,
-        api_token=API_TOKEN,
-        order_by='eviction_id'
+        task_id='my_download_task', # Task ID
+        endpoint="5cei-gny5.json", # Provide the unique identifier for the data
+        file_name=OBJECT,  # Provide the desired file name
+        destination_bucket=BUCKET,  # Your GCS Bucket name
+        api_token=API_TOKEN,  # Your API Token gotten from the developer website
+        order_by='eviction_id', # The column/field for the data to be ordered by
     )
 
     load_gcs_to_bigquery =  GCSToBigQueryOperator(
         task_id = "load_gcs_to_bigquery",
         bucket=f"{BUCKET}", #BUCKET
-        source_objects=[f"{OBJECT}.parquet"], # SOURCE OBJECT
-        destination_project_dataset_table=f"{DATASET}.{OBJECT}_table", # `nyc.green_dataset_data` i.e table name
+        source_objects=[f"{OBJECT}.parquet"], # name of object/file in GCS bucket
+        destination_project_dataset_table=f"{DATASET}.{OBJECT}_table", # `alt_data.eviction_data_table` i.e table name
         autodetect=True, #DETECT SCHEMA : the columns and the type of data in each columns of the CSV file
-        write_disposition="WRITE_APPEND", # command to update table from the  latest (or last row) row number upon every job run or task run
+        write_disposition="WRITE_TRUNCATE", # command to update the table with what's in our file upon every job run or task run
         source_format="PARQUET",
     )
     end = EmptyOperator(task_id="end")
