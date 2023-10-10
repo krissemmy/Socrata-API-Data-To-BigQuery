@@ -104,7 +104,7 @@ class SocrataToGCSHKOperator(BaseOperator):
             #Upload as a CSV file
             gcs_hook.upload(
                     bucket_name=self.destination_bucket,
-                    object_name=csv_file,
+                    object_name=f"raw/{csv_file}",
                     filename=f'{tmpdirname}/{csv_file}',
                     mime_type="text/csv",
                     gzip=False,
