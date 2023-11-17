@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 import tempfile
 
-class SocrataToGCSHKOperator(BaseOperator):
+class EvictionToGCSHKOperator(BaseOperator):
     def __init__(
         self,
         api_token: str,
@@ -20,19 +20,6 @@ class SocrataToGCSHKOperator(BaseOperator):
         *args,
         **kwargs
     ) -> None:
-        """
-        Initializes the operator with required parameters.
-
-        :param api_token: API token for authentication.
-        :param order_by: Field to order the data by.
-        :param gcp_conn_id: Google Cloud connection ID.
-        :param api_url: Base API URL.
-        :param destination_bucket: Destination Google Cloud Storage bucket.
-        :param delegate_to: Optional delegate for GCS access.
-        :param impersonation_chain: Optional impersonation chain for GCS access.
-        :param file_name: Default output file name.
-        :param endpoint: Default API endpoint.
-        """
         super().__init__(*args, **kwargs)
         self.api_url = api_url
         self.api_token = api_token
@@ -45,11 +32,6 @@ class SocrataToGCSHKOperator(BaseOperator):
         self.endpoint = endpoint
 
     def execute(self, context: Dict[str, Any]) -> None:
-        """
-        Executes the operator, downloading data from an API and uploading it to GCS.
-
-        :param context: Execution context.
-        """
         # download it using requests via into a tempfile a pandas df
         with tempfile.TemporaryDirectory() as tmpdirname:
             api_url = self.api_url + self.endpoint
@@ -104,7 +86,7 @@ class SocrataToGCSHKOperator(BaseOperator):
             #Upload as a CSV file
             gcs_hook.upload(
                     bucket_name=self.destination_bucket,
-                    object_name=f"raw/{csv_file}",
+                    object_name=csv_file,
                     filename=f'{tmpdirname}/{csv_file}',
                     mime_type="text/csv",
                     gzip=False,
@@ -113,7 +95,6 @@ class SocrataToGCSHKOperator(BaseOperator):
 
             #Upload as a Parquet file
             parquet_file = self.file_name+".parquet"
-            # change the data type of the date column to datetime
             df['file_date'] = pd.to_datetime(df['file_date'])
             df.to_parquet(f'{tmpdirname}/{parquet_file}', engine='pyarrow')
             # upload it to gcs using GCS hooks
